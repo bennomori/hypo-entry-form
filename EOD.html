@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EOD REVIEW</title>
+  <style>
+    /* Import DIN Engschrift LT Pro font */
+    @import url("https://use.typekit.net/wmu1jiy.css");
+
+    /* Base styling */
+    body {
+      font-family: "DIN Engschrift LT Pro", sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background-color: #1a1a1a;
+      margin: 0;
+      color: #e0e0e0;
+    }
+
+    /* Container styling */
+    .process-container {
+      background-color: #2a2a2a;
+      border-radius: 10px;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.4);
+      padding: 30px;
+      width: 800px;
+      max-width: 90%;
+    }
+
+    h1 {
+      font-size: 24px;
+      font-weight: 600;
+      text-align: center;
+      margin-bottom: 20px;
+      color: #e0e0e0;
+    }
+
+    h2 {
+      font-size: 18px;
+      margin-bottom: 10px;
+      color: #e0e0e0;
+    }
+
+    .process-step {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 15px;
+    }
+
+    label {
+      font-size: 18px;
+      margin-bottom: 5px;
+    }
+
+    input[type="time"], input[type="date"], select, textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #444;
+      border-radius: 5px;
+      font-size: 14px;
+      color: #e0e0e0;
+      background-color: #333;
+      outline: none;
+      transition: border-color 0.3s ease;
+      margin-top: 5px;
+    }
+
+    #dayOfWeek {
+      margin-left: 10px;
+      font-size: 16px;
+      color: #a0a0a0;
+    }
+
+    .trade-entry {
+      margin-bottom: 20px;
+      border-bottom: 1px solid #444;
+      padding-bottom: 10px;
+    }
+
+    .hypo-details {
+      background-color: #333;
+      padding: 15px;
+      border-radius: 5px;
+      margin-top: 15px;
+      margin-bottom: 20px;
+    }
+
+    .checkbox-container, .pill-button-container {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      padding-top: 10px;
+    }
+
+    .pill-button {
+      background-color: #444;
+      color: #e0e0e0;
+      padding: 8px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    .pill-button.selected {
+      background-color: #00695c;
+      color: #fff;
+    }
+
+    .submit-button {
+      width: 100%;
+      padding: 12px;
+      background-color: #444;
+      color: #e0e0e0;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .submit-button:disabled {
+      background-color: #333;
+      color: #777;
+      cursor: not-allowed;
+    }
+
+    /* Styling for the Process Goal input with dropdown */
+input[list="processGoals"] {
+  background-color: #333;
+  color: #e0e0e0;
+  border: 1px solid #444;
+  border-radius: 5px;
+  padding: 10px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.3s ease;
+  margin-top: 5px;
+}
+
+    /* Styling for screenshot preview and button */
+    .screenshot-preview {
+      max-width: 100%;
+      margin-top: 10px;
+      border: 1px solid #444;
+      border-radius: 5px;
+      display: none; /* Hidden initially */
+    }
+
+    .file-input {
+      display: none;
+    }
+
+    .section-divider {
+  margin: 10px 0; /* Adjust the margin as needed */
+  border-bottom: 1px solid #555; /* Optional line to visually separate sections */
+}
+
+
+    /* Ensure consistent font size across Hypo Review section */
+.slider-container label {
+  font-size: 14px; /* Match the smaller font size */
+  color: #e0e0e0;
+}
+
+.hypo-review-heading {
+  font-size: 14px; /* Slightly smaller for consistency with other list items */
+  color: #e0e0e0; /* Keeps the text color consistent */
+  margin-bottom: 20px; /* Adds more spacing below */
+  text-transform: uppercase; /* Keeps the text uppercase */
+  font-weight: normal; /* Optional: Set font weight to normal if it appears bold */
+  letter-spacing: 0.5px; /* Optional: Adds subtle letter spacing for readability */
+}
+
+
+.section-divider {
+  margin: 20px 0;
+  border-bottom: 1px solid #555;
+}
+
+.slider-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  color: #e0e0e0;
+  font-size: 14px;
+}
+
+/* Toggle switch style */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 34px;
+  height: 18px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.4s;
+  border-radius: 18px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 14px;
+  width: 14px;
+  left: 2px;
+  bottom: 2px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: #4caf50;
+}
+
+input:checked + .slider:before {
+  transform: translateX(16px);
+}
+
+
+    .file-input-label {
+      display: inline-block;
+      color: #e0e0e0;
+      background-color: #444;
+      padding: 8px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+      margin-top: 10px;
+      text-align: center;
+      transition: background-color 0.3s ease;
+    }
+
+    /* Consolidated styling for checklist and hypo-details sections */
+.checklist-container label, 
+.hypo-details .checkbox-container label {
+  font-size: 14px;
+  color: #e0e0e0;
+  text-transform: uppercase;
+}
+
+.checklist-container input[type="checkbox"], 
+.hypo-details .checkbox-container input[type="checkbox"] {
+  margin-right: 5px;
+}
+
+
+    
+
+    .file-input-label:hover {
+      background-color: #555;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="process-container">
+    <h1>End-of-Day (EOD) Review</h1>
+
+    <!-- Buttons for downloading as image and PDF -->
+  <button onclick="generateImage()">Download as Image</button>
+  <button onclick="generatePDF()">Download as PDF</button>
+
+
+    <!-- Date and Day Section -->
+    <h2>Date and Day:</h2>
+    <div class="process-step">
+      <div style="display: flex; align-items: center;">
+        <input type="date" id="reviewDate" onchange="updateDayOfWeek()">
+        <span id="dayOfWeek"></span>
+      </div>
+    </div>
+
+    <h2>Process Goal:</h2>
+<div class="process-step">
+  <input list="processGoals" id="processGoal" placeholder="Select or enter process goal">
+  <datalist id="processGoals">
+    <option value="Goal 1">
+    <option value="Goal 2">
+    <option value="Goal 3">
+  </datalist>
+</div>
+
+    <!-- Trades Taken Section -->
+    <h2>Trades Taken</h2>
+    <div id="tradesContainer"></div>
+    <button onclick="addTradeField()">Add Trade</button>
+
+    <!-- Reflections Section -->
+    <h2>Daily Reflection</h2>
+    <div class="process-step">
+      <label for="didWell">Did Well:</label>
+      <textarea id="didWell" placeholder="What went well today..."></textarea>
+    </div>
+    <div class="process-step">
+      <label for="didPoorly">Did Poorly:</label>
+      <textarea id="didPoorly" placeholder="What could be improved..."></textarea>
+    </div>
+    <div class="process-step">
+      <label for="tomorrowsFocus">Tomorrow's Focus:</label>
+      <textarea id="tomorrowsFocus" placeholder="Focus for tomorrow..."></textarea>
+    </div>
+
+    <button onclick="submitEODReview()" class="submit-button">Submit EOD Review</button>
+  </div>
+
+  <script>
+    const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+    function updateDayOfWeek() {
+      const dateInput = document.getElementById('reviewDate').value;
+      const dayOfWeekElement = document.getElementById('dayOfWeek');
+      
+      if (dateInput) {
+        const date = new Date(dateInput);
+        const dayName = dayNames[date.getUTCDay()];
+        dayOfWeekElement.textContent = `(${dayName})`;
+      } else {
+        dayOfWeekElement.textContent = '';
+      }
+    }
+
+    let tradeCount = 0;
+
+    function addTradeField() {
+      tradeCount += 1;
+      const tradesContainer = document.getElementById('tradesContainer');
+
+      const tradeDiv = document.createElement('div');
+      tradeDiv.className = 'trade-entry';
+      tradeDiv.id = `trade${tradeCount}`;
+
+      const marketSelect = document.createElement('select');
+      marketSelect.id = `tradeMarket${tradeCount}`;
+      marketSelect.innerHTML = `
+        <option value="">--Select Market--</option>
+        <option value="ES">ES (E-mini S&P)</option>
+        <option value="NQ">NQ (E-mini NASDAQ)</option>
+        <option value="CL">CL (Crude Oil)</option>
+        <option value="GC">GC (Gold)</option>
+      `;
+
+      const hypoSelect = document.createElement('select');
+      hypoSelect.id = `hypoSelect${tradeCount}`;
+      hypoSelect.innerHTML = `<option value="">--Select Hypo--</option>`;
+      hypoSelect.addEventListener('change', () => displayHypoDetails(tradeCount));
+
+      const hypoDetailsDiv = document.createElement('div');
+hypoDetailsDiv.className = 'hypo-details';
+hypoDetailsDiv.style.display = 'none';
+hypoDetailsDiv.innerHTML = `
+  <h3 class="hypo-review-heading">Hypo Review:</h3>
+  
+  <div class="slider-container"><label>BIAS: <span id="hypoBias${tradeCount}">BEARISH (ROTATIONAL) SHORT</span></label><label class="switch"><input type="checkbox" id="hypoBiasCheck${tradeCount}"><span class="slider round"></span></label></div>
+  <div class="slider-container"><label>DIRECTIONAL QUALITY: <span id="hypoDirectionalQuality${tradeCount}">B</span></label><label class="switch"><input type="checkbox" id="hypoDirectionalQualityCheck${tradeCount}"><span class="slider round"></span></label></div>
+  <div class="slider-container"><label>PRICE CONFLUENCE QUALITY: <span id="hypoQuality${tradeCount}">B</span></label><label class="switch"><input type="checkbox" id="hypoQualityCheck${tradeCount}"><span class="slider round"></span></label></div>
+  <div class="slider-container"><label>LIS PRICE: <span id="hypoFrom${tradeCount}"></span></label><label class="switch"><input type="checkbox" id="hypoFromCheck${tradeCount}"><span class="slider round"></span></label></div>
+  <div class="slider-container"><label>LIKELY DESTINATION PRICE: <span id="hypoLikelyDestinationNow${tradeCount}">5958</span></label><label class="switch"><input type="checkbox" id="hypoLikelyDestinationNowCheck${tradeCount}"><span class="slider round"></span></label></div>
+  <div class="slider-container"><label>LIKELY DESTINATION REFERENCE: <span id="hypoDestinationReference${tradeCount}">Y+2</span></label><label class="switch"><input type="checkbox" id="hypoDestinationReferenceCheck${tradeCount}"><span class="slider round"></span></label></div>
+
+<div class="section-divider"></div>
+
+  <div class="slider-container"><label>VIA MONTHLY: <span id="hypoViaMonthly${tradeCount}">EF-MDVAH</span></label><label class="switch"><input type="checkbox" id="hypoViaMonthlyCheck${tradeCount}"><span class="slider round"></span></label></div>
+  <div class="slider-container"><label>VIA WEEKLY: <span id="hypoViaWeekly${tradeCount}"></span></label><label class="switch"><input type="checkbox" id="hypoViaWeeklyCheck${tradeCount}"><span class="slider round"></span></label></div>
+  <div class="slider-container"><label>VIA CVA: <span id="hypoViaCVA${tradeCount}"></span></label><label class="switch"><input type="checkbox" id="hypoViaCVACheck${tradeCount}"><span class="slider round"></span></label></div>
+  <div class="slider-container"><label>VIA VCVA: <span id="hypoViaVCVA${tradeCount}"></span></label><label class="switch"><input type="checkbox" id="hypoViaVCVACheck${tradeCount}"><span class="slider round"></span></label></div>
+  <div class="slider-container"><label>VIA PVA: <span id="hypoViaPVA${tradeCount}">RPB-W-PVAH</span></label><label class="switch"><input type="checkbox" id="hypoViaPVACheck${tradeCount}"><span class="slider round"></span></label></div>
+  <div class="slider-container"><label>VIA TTF 1: <span id="hypoViaTTF1${tradeCount}">EF-DVAH</span></label><label class="switch"><input type="checkbox" id="hypoViaTTF1Check${tradeCount}"><span class="slider round"></span></label></div>
+  <div class="slider-container"><label>VIA TTF 2: <span id="hypoViaTTF2${tradeCount}">IBPB-DVAL</span></label><label class="switch"><input type="checkbox" id="hypoViaTTF2Check${tradeCount}"><span class="slider round"></span></label></div>
+
+<div class="section-divider"></div>
+
+  <div class="slider-container"><label>1ST SCALE LOCATION: <span id="hypoFirstScaleLocation${tradeCount}">Y+2</span></label><label class="switch"><input type="checkbox" id="hypoFirstScaleLocationCheck${tradeCount}"><span class="slider round"></span></label></div>
+  <div class="slider-container"><label>1ST SCALE PRICE: <span id="hypoFirstScalePrice${tradeCount}">5958</span></label><label class="switch"><input type="checkbox" id="hypoFirstScalePriceCheck${tradeCount}"><span class="slider round"></span></label></div>
+
+  <!-- Divider for spacing between sections -->
+  <div class="section-divider"></div>
+
+  <!-- Additional yes/no sliders -->
+  <div class="slider-container">
+    <label>Did Hypo eventuate?</label>
+    <label class="switch">
+      <input type="checkbox" id="didHypoEventuate${tradeCount}">
+      <span class="slider round"></span>
+    </label>
+  </div>
+  <div class="slider-container">
+    <label>Was Trade in line with Hypo?</label>
+    <label class="switch">
+      <input type="checkbox" id="wasTradeInLineWithHypo${tradeCount}">
+      <span class="slider round"></span>
+    </label>
+  </div>
+
+  <!-- Comments section -->
+  <div class="process-step">
+    <label for="hypoComments${tradeCount}">Comments:</label>
+    <textarea id="hypoComments${tradeCount}" placeholder="Enter comments..."></textarea>
+  </div>
+`;
+
+
+
+      
+
+      tradeDiv.appendChild(marketSelect);
+      tradeDiv.appendChild(hypoSelect);
+      tradeDiv.appendChild(hypoDetailsDiv);
+      
+
+      const nytContainer = document.createElement('div');
+      nytContainer.style.display = 'inline-flex';
+      nytContainer.style.alignItems = 'center';
+
+      const nytLabel = document.createElement('span');
+      nytLabel.className = 'time-label';
+      nytLabel.textContent = 'NYT';
+
+      const nytInput = document.createElement('input');
+      nytInput.type = 'time';
+      nytInput.id = `tradeTimeNYT${tradeCount}`;
+      nytInput.step = 60;
+      nytInput.style.marginLeft = '5px';
+      nytInput.oninput = () => calculateCTTime(nytInput, `tradeTimeCT${tradeCount}`);
+
+      nytContainer.appendChild(nytLabel);
+      nytContainer.appendChild(nytInput);
+
+      const ctContainer = document.createElement('div');
+      ctContainer.style.display = 'inline-flex';
+      ctContainer.style.alignItems = 'center';
+      ctContainer.style.marginLeft = '10px';
+
+      const ctLabel = document.createElement('span');
+      ctLabel.className = 'time-label';
+      ctLabel.textContent = 'CT';
+
+      const ctInput = document.createElement('input');
+      ctInput.type = 'time';
+      ctInput.id = `tradeTimeCT${tradeCount}`;
+      ctInput.step = 60;
+      ctInput.style.marginLeft = '5px';
+      ctInput.readOnly = true;
+
+      ctContainer.appendChild(ctLabel);
+      ctContainer.appendChild(ctInput);
+
+      const descriptionInput = document.createElement('textarea');
+      descriptionInput.placeholder = `Describe Trade ${tradeCount}...`;
+      descriptionInput.id = `tradeDescription${tradeCount}`;
+
+      const imgPreview = document.createElement('img');
+      imgPreview.className = 'screenshot-preview';
+      imgPreview.id = `preview${tradeCount}`;
+
+      const screenshotInput = document.createElement('input');
+      screenshotInput.type = 'file';
+      screenshotInput.accept = 'image/*';
+      screenshotInput.id = `tradeScreenshot${tradeCount}`;
+      screenshotInput.className = 'file-input';
+      screenshotInput.onchange = () => previewImage(screenshotInput, tradeCount);
+
+      const screenshotLabel = document.createElement('label');
+      screenshotLabel.htmlFor = `tradeScreenshot${tradeCount}`;
+      screenshotLabel.className = 'file-input-label';
+      screenshotLabel.textContent = 'Screenshot';
+
+      const checklistContainer = document.createElement('div');
+checklistContainer.className = 'checklist-container';
+checklistContainer.innerHTML = `
+
+<div class="section-divider"></div>
+
+  <div class="slider-container"><label>Pre-market Prep complete?</label><label class="switch"><input type="checkbox" id="prepComplete${tradeCount}"><span class="slider round"></span></label></div>
+  <div class="slider-container"><label>SC Charts annotated with LIS?</label><label class="switch"><input type="checkbox" id="scChartsAnnotated${tradeCount}"><span class="slider round"></span></label></div>
+  <div class="slider-container"><label>Dissonance?</label><label class="switch"><input type="checkbox" id="dissonance${tradeCount}"><span class="slider round"></span></label></div>
+  <div class="slider-container"><label>Level alert received?</label><label class="switch"><input type="checkbox" id="levelAlertReceived${tradeCount}"><span class="slider round"></span></label></div>
+
+<div class="section-divider"></div>
+
+  <div class="slider-container"><label>Price Acceptance?</label><label class="switch"><input type="checkbox" id="priceAcceptance${tradeCount}"><span class="slider round"></span></label></div>
+  <div class="slider-container"><label>Volume/Time Acceptance?</label><label class="switch"><input type="checkbox" id="volumeTimeAcceptance${tradeCount}"><span class="slider round"></span></label></div>
+  <div class="slider-container"><label>Short term Rhythm?</label><label class="switch"><input type="checkbox" id="shortTermRhythm${tradeCount}"><span class="slider round"></span></label></div>
+  <div class="slider-container"><label>Medium Term Rhythm?</label><label class="switch"><input type="checkbox" id="mediumTermRhythm${tradeCount}"><span class="slider round"></span></label></div>
+
+  <div class="section-divider"></div>
+
+  <!-- Multi-option items with sliders for each choice -->
+  <div class="slider-container"><label>PVA</label><label class="switch"><input type="checkbox" id="valueAreaPVA${tradeCount}"><span class="slider round"></span></label></div>
+  <div class="slider-container"><label>VCVA</label><label class="switch"><input type="checkbox" id="valueAreaVCVA${tradeCount}"><span class="slider round"></span></label></div>
+  <div class="slider-container"><label>COMB VA</label><label class="switch"><input type="checkbox" id="valueAreaCOMB${tradeCount}"><span class="slider round"></span></label></div>
+
+  <!-- V/A Pullback Options -->
+  <div class="slider-container"><label>RPB</label><label class="switch"><input type="checkbox" id="vaPullbackRPB${tradeCount}"><span class="slider round"></span></label></div>
+  <div class="slider-container"><label>BPB</label><label class="switch"><input type="checkbox" id="vaPullbackBPB${tradeCount}"><span class="slider round"></span></label></div>
+
+<div class="section-divider"></div>
+
+  <!-- Entry Options -->
+  <div class="slider-container"><label>EF-DVAH</label><label class="switch"><input type="checkbox" id="entryEFDVAH${tradeCount}"><span class="slider round"></span></label></div>
+  <div class="slider-container"><label>EF-DVAL</label><label class="switch"><input type="checkbox" id="entryEFDVAL${tradeCount}"><span class="slider round"></span></label></div>
+  <div class="slider-container"><label>IPB-DVAH</label><label class="switch"><input type="checkbox" id="entryIPBDVAH${tradeCount}"><span class="slider round"></span></label></div>
+  <div class="slider-container"><label>IPB-DVAL</label><label class="switch"><input type="checkbox" id="entryIPBDVAL${tradeCount}"><span class="slider round"></span></label></div>
+
+<div class="section-divider"></div>
+
+
+  <div class="slider-container"><label>Enough of a pullback?</label><label class="switch"><input type="checkbox" id="enoughPullback${tradeCount}"><span class="slider round"></span></label></div>
+  <div class="slider-container"><label>ZigZag Oscillator in sync?</label><label class="switch"><input type="checkbox" id="zigZagSync${tradeCount}"><span class="slider round"></span></label></div>
+  <div class="slider-container"><label>White Bar LONG/Blue Bar SHORT?</label><label class="switch"><input type="checkbox" id="whiteBarLongBlueShort${tradeCount}"><span class="slider round"></span></label></div>
+  <div class="slider-container"><label>Makes Narrative & DVA sense?</label><label class="switch"><input type="checkbox" id="narrativeDVASense${tradeCount}"><span class="slider round"></span></label></div>
+`;
+
+
+      tradeDiv.appendChild(nytContainer);
+      tradeDiv.appendChild(ctContainer);
+      tradeDiv.appendChild(descriptionInput);
+      tradeDiv.appendChild(imgPreview);
+      tradeDiv.appendChild(screenshotLabel);
+      tradeDiv.appendChild(screenshotInput);
+      tradeDiv.appendChild(checklistContainer);
+
+      tradesContainer.appendChild(tradeDiv);
+
+      fetchHypoOptions(hypoSelect);
+    }
+
+    function calculateCTTime(nytInput, ctInputId) {
+      const nytTime = nytInput.value;
+      if (nytTime) {
+        const [hours, minutes] = nytTime.split(':').map(Number);
+        let ctHours = (hours - 1 + 24) % 24;
+        document.getElementById(ctInputId).value = `${String(ctHours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+      }
+    }
+
+    function previewImage(input, tradeCount) {
+      const file = input.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const imgPreview = document.getElementById(`preview${tradeCount}`);
+          imgPreview.src = e.target.result;
+          imgPreview.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function fetchHypoOptions(selectElement) {
+      const url = 'https://script.google.com/macros/s/AKfycbxgQTZ5951Kf4PRLMOyEpYWvqVevaed028BJ6E5OWr9csMyq7ZulNPsH5ytE41--pqV/exec';
+      fetch(url)
+        .then(response => response.json())
+        .then(data => {
+          data.forEach(hypo => {
+            const option = document.createElement('option');
+            option.value = JSON.stringify(hypo);
+            option.textContent = hypo.identifier;
+            selectElement.appendChild(option);
+          });
+        })
+        .catch(error => console.error('Error fetching data:', error));
+    }
+
+    function displayHypoDetails(tradeId) {
+      const hypoSelect = document.getElementById(`hypoSelect${tradeId}`);
+      const hypoDetailsDiv = document.querySelector(`#trade${tradeId} .hypo-details`);
+      const hypo = JSON.parse(hypoSelect.value);
+      if (hypo) {
+        document.getElementById(`hypoBias${tradeId}`).textContent = hypo.bias || '';
+        document.getElementById(`hypoDirectionalQuality${tradeId}`).textContent = hypo.directionalQuality || '';
+        document.getElementById(`hypoQuality${tradeId}`).textContent = hypo.priceQuality || '';
+        document.getElementById(`hypoLikelyDestinationNow${tradeId}`).textContent = hypo.likelyDestinationNow || '';
+        document.getElementById(`hypoDestinationReference${tradeId}`).textContent = hypo.destinationReference || '';
+        document.getElementById(`hypoViaMonthly${tradeId}`).textContent = hypo.viaMonthly || '';
+        document.getElementById(`hypoViaWeekly${tradeId}`).textContent = hypo.viaWeekly || '';
+        document.getElementById(`hypoViaCVA${tradeId}`).textContent = hypo.viaCVA || '';
+        document.getElementById(`hypoViaVCVA${tradeId}`).textContent = hypo.viaVCVA || '';
+        document.getElementById(`hypoViaPVA${tradeId}`).textContent = hypo.viaPVA || '';
+        document.getElementById(`hypoViaTTF1${tradeId}`).textContent = hypo.viaTTF1 || '';
+        document.getElementById(`hypoViaTTF2${tradeId}`).textContent = hypo.viaTTF2 || '';
+        document.getElementById(`hypoFirstScaleLocation${tradeId}`).textContent = hypo.firstScaleLocation || '';
+        document.getElementById(`hypoFirstScalePrice${tradeId}`).textContent = hypo.firstScalePrice || '';
+
+        hypoDetailsDiv.style.display = 'block';
+      } else {
+        hypoDetailsDiv.style.display = 'none';
+      }
+    }
+
+    async function submitEODReview() {
+      alert('Submitting EOD Review');
+    }
+  </script>
+  <!-- Add html2canvas script -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+
+  <script>
+    function generateImage() {
+      const element = document.querySelector('.process-container');
+      html2canvas(element, {
+        scale: 3,  // Adjust for resolution
+        useCORS: true,
+        backgroundColor: null,  // Prevent default background
+        scrollX: 0,
+        scrollY: 0,
+        windowWidth: document.documentElement.offsetWidth,
+        windowHeight: document.documentElement.scrollHeight
+      }).then(canvas => {
+        const link = document.createElement('a');
+        link.download = 'EOD_Review.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+      });
+    }
+
+    async function generatePDF() {
+  const { jsPDF } = window.jspdf;
+  const element = document.querySelector('.process-container');
+
+  html2canvas(element, {
+    scale: 3, // Higher scale for better quality
+    useCORS: true,
+    backgroundColor: null // Keeps the background transparent
+  }).then(canvas => {
+    const pdf = new jsPDF('p', 'mm', 'a4');
+    const imgData = canvas.toDataURL('image/png');
+
+    // A4 dimensions
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+
+    // Determine the image height in PDF units at the current scale
+    const imgWidth = pageWidth;
+    const imgHeight = (canvas.height * pageWidth) / canvas.width;
+
+    let position = 0;
+
+    // Add image data to each page as needed
+    while (position < imgHeight) {
+      const pageHeightRemaining = imgHeight - position > pageHeight ? pageHeight : imgHeight - position;
+      
+      pdf.addImage(imgData, 'PNG', 0, -position, imgWidth, imgHeight, undefined, 'FAST');
+      position += pageHeight;
+
+      if (position < imgHeight) pdf.addPage();
+    }
+
+    pdf.save('EOD_Review.pdf');
+  }).catch(error => {
+    console.error("Error generating PDF:", error);
+  });
+}
+  </script>
+
+
+</body>
+</html>
