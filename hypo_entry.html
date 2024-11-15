@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HYPO</title>
+  <style>
+    /* Import DIN Engschrift LT Pro font */
+    @import url("https://use.typekit.net/wmu1jiy.css");
+
+    /* Base styling */
+    body {
+      font-family: "DIN Engschrift LT Pro", sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background-color: #1a1a1a;
+      margin: 0;
+      color: #e0e0e0;
+    }
+
+    /* Container styling */
+    .process-container {
+      background-color: #2a2a2a;
+      border-radius: 10px;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.4);
+      padding: 30px;
+      width: 800px;
+      max-width: 90%;
+    }
+
+    h1 {
+      font-size: 24px;
+      font-weight: 600;
+      text-align: center;
+      margin-bottom: 20px;
+      color: #e0e0e0;
+    }
+
+    .process-step {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 15px;
+    }
+    
+
+    .process-step label {
+      font-size: 14px;
+      color: #b0b0b0;
+      margin-bottom: 5px;
+      font-weight: 500;
+    }
+
+    input[type="date"],
+    select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #444;
+      border-radius: 5px;
+      font-size: 14px;
+      color: #e0e0e0;
+      background-color: #333;
+      outline: none;
+      transition: border-color 0.3s ease;
+    }
+
+    input[type="date"]:focus,
+    select:focus {
+      border-color: #666;
+    }
+
+    .hypo-details {
+      background-color: #333;
+      padding: 15px;
+      border-radius: 5px;
+      margin-top: 15px;
+      margin-bottom: 20px;
+    }
+
+    .hypo-details strong {
+  width: 250px; /* Adjusted width for the first column */
+  text-align: left;
+  margin-right: 10px;
+}
+
+    .hypo-details strong {
+      width: 180px;
+      text-align: left;
+      margin-right: 10px;
+    }
+
+    .checkbox-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 0;
+      font-size: 14px;
+      color: #e0e0e0;
+      transition: color 0.3s ease;
+    }
+
+    .checkbox-container.completed {
+      color: #777;
+    }
+
+    .checkbox-container label {
+      margin: 0;
+      color: inherit;
+      flex-grow: 1;
+    }
+
+    .checkbox-container input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      accent-color: #888;
+      cursor: pointer;
+      margin-left: 10px;
+    }
+
+    .pill-button-container {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .pill-button {
+      background-color: #444;
+      color: #e0e0e0;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: bold;
+      text-align: center;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .pill-button.selected {
+      background-color: #00695c;
+      color: #fff;
+    }
+
+    /* Adjust space for 9 and 10 */
+    #step9-container, #step10-container {
+      margin-bottom: 10px; /* Slightly reduced bottom margin */
+    }
+
+    .submit-button {
+      width: 100%;
+      padding: 12px;
+      background-color: #444;
+      color: #e0e0e0;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .submit-button:disabled {
+      background-color: #333;
+      color: #777;
+      cursor: not-allowed;
+    }
+
+    .submit-button:not(:disabled):hover {
+      background-color: #555;
+    }
+
+    .dissonance-options {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .scalp {
+      background-color: #aa0000;
+      color: #fff;
+      padding: 5px;
+      font-weight: bold;
+      display: none;
+    }
+
+    .checkbox-container input[type="checkbox"].scalp-checkbox:checked + .scalp {
+      display: inline;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="process-container">
+    <h1>HYPO - TRADE ENTRY</h1>
+    <div class="process-step">
+      <label for="tradeDate">Trade Date:</label>
+      <input type="date" id="tradeDate" required placeholder="DD/MM/YYYY">
+    </div>
+    <div class="process-step">
+      <label for="hypoSelect">Select Hypo:</label>
+      <select id="hypoSelect">
+        <option value="">--Select Hypo--</option>
+      </select>
+    </div>
+
+    <!-- Hypo Details Section -->
+<div id="hypoDetails" class="hypo-details" style="display: none;">
+    <p><strong>SESSION:</strong> <span id="hypoSession"></span></p>
+    <p><strong>BIAS:</strong> <span id="hypoBias"></span></p>
+    <p><strong>DIRECTIONAL CONFLUENCE QUALITY:</strong> <span id="hypoDirectionalQuality"></span></p>
+    <p><strong>PRICE CONFLUENCE QUALITY:</strong> <span id="hypoQuality"></span></p>
+    <p><strong>LIS:</strong> <span id="hypoFrom"></span></p>
+    <p><strong>LIKELY DESTINATION PRICE:</strong> <span id="hypoLikelyDestinationNow"></span></p>
+    <p><strong>LIKELY DESTINATION REFERENCE:</strong> <span id="hypoDestinationReference"></span></p>
+    <p><strong>HYPO:</strong> <span id="hypoName"></span></p>
+  
+    <!-- New Fields for VIA and SCALE -->
+    <p><strong>VIA MONTHLY:</strong> <span id="hypoViaMonthly"></span></p>
+    <p><strong>VIA WEEKLY:</strong> <span id="hypoViaWeekly"></span></p>
+    <p><strong>VIA CVA:</strong> <span id="hypoViaCVA"></span></p>
+    <p><strong>VIA VCVA:</strong> <span id="hypoViaVCVA"></span></p>
+    <p><strong>VIA PVA:</strong> <span id="hypoViaPVA"></span></p>
+    <p><strong>VIA TTF 1:</strong> <span id="hypoViaTTF1"></span></p>
+    <p><strong>VIA TTF 2:</strong> <span id="hypoViaTTF2"></span></p>
+    <p><strong>1ST SCALE LOCATION:</strong> <span id="hypoFirstScaleLocation"></span></p>
+    <p><strong>1ST SCALE PRICE:</strong> <span id="hypoFirstScalePrice"></span></p>
+  </div>
+
+    <!-- Checklist Items -->
+    <div class="checkbox-container" id="step1-container">
+      <label for="step1">1: Pre-market Prep complete?</label>
+      <input type="checkbox" id="step1">
+    </div>
+    <div class="checkbox-container" id="step2-container">
+      <label for="step2">2: SC Charts annotated with LIS?</label>
+      <input type="checkbox" id="step2">
+    </div>
+
+    <!-- Dissonance Checklist Item -->
+    <div class="checkbox-container" id="step3-container">
+      <label>3: Dissonance?</label>
+      <div class="dissonance-options">
+        <label for="dissonanceYes">Yes</label>
+        <input type="checkbox" id="dissonanceYes" class="scalp-checkbox">
+        <span class="scalp">SCALP</span>
+        <label for="dissonanceNo">No</label>
+        <input type="checkbox" id="dissonanceNo">
+      </div>
+    </div>
+
+    <div class="checkbox-container" id="step4-container">
+      <label for="step4">4: Level alert received?</label>
+      <input type="checkbox" id="step4">
+    </div>
+    <div class="checkbox-container" id="step5-container">
+      <label for="step5">5: Price Acceptance?</label>
+      <input type="checkbox" id="step5">
+    </div>
+    <div class="checkbox-container" id="step6-container">
+      <label for="step6">6: Volume/Time Acceptance?</label>
+      <input type="checkbox" id="step6">
+    </div>
+    <div class="checkbox-container" id="step7-container">
+      <label for="step7">7: Short term Rhythm?</label>
+      <input type="checkbox" id="step7">
+    </div>
+    <div class="checkbox-container" id="step8-container">
+      <label for="step8">8: Medium Term Rhythm?</label>
+      <input type="checkbox" id="step8">
+    </div>
+
+    <!-- Pill Button Section at the End for Choose Value Area Type -->
+    <div class="checkbox-container" id="step9-container">
+      <label>9: Choose Value Area Type:</label>
+        <div class="pill-button-container">
+            <div class="pill-button" onclick="selectPillButton(this, 'step9')">CVA</div>
+            <div class="pill-button" onclick="selectPillButton(this, 'step9')">PVA</div>
+            <div class="pill-button" onclick="selectPillButton(this, 'step9')">VCVA</div>
+            <div class="pill-button" onclick="selectPillButton(this, 'step9')">COMB VA</div>
+          </div>
+        </div>
+  
+      <!-- Pill Button Section for V/A Pullback -->
+    <div class="checkbox-container" id="step10-container">
+        <label>10: V/A Pullback:</label>
+        <div class="pill-button-container">
+          <div class="pill-button" onclick="selectPillButton(this, 'step10')">RPB</div>
+          <div class="pill-button" onclick="selectPillButton(this, 'step10')">BPB</div>
+        </div>
+      </div>
+  
+      <!-- New Step 11: Entries -->
+      <div class="checkbox-container" id="step11-container">
+        <label>11: Entries:</label>
+        <div class="pill-button-container">
+          <div class="pill-button" onclick="selectPillButton(this, 'step11')">EF-DVAH</div>
+          <div class="pill-button" onclick="selectPillButton(this, 'step11')">EF-DVAL</div>
+          <div class="pill-button" onclick="selectPillButton(this, 'step11')">IPB-DVAH</div>
+          <div class="pill-button" onclick="selectPillButton(this, 'step11')">IPB-DVAL</div>
+        </div>
+      </div>
+  
+      <!-- New Checklist Steps 12-15 -->
+      <div class="checkbox-container" id="step12-container">
+        <label for="step12">12: Enough of a pullback?</label>
+        <input type="checkbox" id="step12">
+      </div>
+      <div class="checkbox-container" id="step13-container">
+        <label for="step13">13: ZigZag Oscillator in sync?</label>
+        <input type="checkbox" id="step13">
+      </div>
+      <div class="checkbox-container" id="step14-container">
+        <label for="step14">14: White Bar LONG/Blue Bar SHORT?</label>
+        <input type="checkbox" id="step14">
+      </div>
+      <div class="checkbox-container" id="step15-container">
+        <label for="step15">15: Makes Narrative & DVA sense?</label>
+        <input type="checkbox" id="step15">
+      </div>
+  
+      <button id="submitButton" class="submit-button" disabled>Submit Trade</button>
+    </div>
+  
+    <script>
+      // Define all required variables
+    const hypoSelect = document.getElementById('hypoSelect');
+    const hypoDetails = document.getElementById('hypoDetails');
+    const hypoSession = document.getElementById('hypoSession');
+    const hypoBias = document.getElementById('hypoBias');
+    const hypoDirectionalQuality = document.getElementById('hypoDirectionalQuality');
+    const hypoQuality = document.getElementById('hypoQuality');
+    const hypoFrom = document.getElementById('hypoFrom');
+    const hypoLikelyDestinationNow = document.getElementById('hypoLikelyDestinationNow');
+    const hypoDestinationReference = document.getElementById('hypoDestinationReference');
+    const hypoName = document.getElementById('hypoName');
+
+    // VIA and SCALE fields
+    const hypoViaMonthly = document.getElementById('hypoViaMonthly');
+    const hypoViaWeekly = document.getElementById('hypoViaWeekly');
+    const hypoViaCVA = document.getElementById('hypoViaCVA');
+    const hypoViaVCVA = document.getElementById('hypoViaVCVA');
+    const hypoViaPVA = document.getElementById('hypoViaPVA');
+    const hypoViaTTF1 = document.getElementById('hypoViaTTF1');
+    const hypoViaTTF2 = document.getElementById('hypoViaTTF2');
+    const hypoFirstScaleLocation = document.getElementById('hypoFirstScaleLocation');
+    const hypoFirstScalePrice = document.getElementById('hypoFirstScalePrice');
+    
+    // **Define the checkboxes variable here**
+    const checkboxes = document.querySelectorAll('.checkbox-container input[type="checkbox"]');
+    const submitButton = document.getElementById('submitButton');
+  
+      const fetchUrl = 'https://script.google.com/macros/s/AKfycbxgQTZ5951Kf4PRLMOyEpYWvqVevaed028BJ6E5OWr9csMyq7ZulNPsH5ytE41--pqV/exec';
+  
+      // Adjusted fetch code with additional console logs and without Content-Type header
+fetch(fetchUrl)
+    .then(response => {
+        console.log('Response Status:', response.status); // Check if status is OK (200)
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Fetched data:', data); // Log full data for review
+        if (Array.isArray(data)) {
+            data.forEach(hypo => {
+                const option = document.createElement('option');
+                option.value = JSON.stringify(hypo);
+                option.textContent = hypo.identifier || "Unnamed Hypo";
+                hypoSelect.appendChild(option);
+            });
+        } else {
+            console.error('Expected array but received:', data);
+        }
+    })
+    .catch(error => console.error('Error fetching data:', error));
+  
+      // Display selected hypo details
+      hypoSelect.addEventListener('change', () => {
+          if (hypoSelect.value) {
+              try {
+                  const selectedHypo = JSON.parse(hypoSelect.value);
+  
+                  hypoSession.textContent = selectedHypo.session || '';
+                  hypoBias.textContent = selectedHypo.bias || '';
+                  hypoDirectionalQuality.textContent = selectedHypo.directionalQuality || '';
+                  hypoQuality.textContent = selectedHypo.priceQuality || '';
+                  hypoFrom.textContent = selectedHypo.from || '';
+                  hypoLikelyDestinationNow.textContent = selectedHypo.likelyDestinationNow || '';
+                  hypoDestinationReference.textContent = selectedHypo.destinationReference || '';
+                  hypoName.textContent = selectedHypo.hypo || '';
+  
+                  // Populate VIA and SCALE fields
+                  hypoViaMonthly.textContent = selectedHypo.viaMonthly || '';
+                  hypoViaWeekly.textContent = selectedHypo.viaWeekly || '';
+                  hypoViaCVA.textContent = selectedHypo.viaCVA || '';
+                  hypoViaVCVA.textContent = selectedHypo.viaVCVA || '';
+                  hypoViaPVA.textContent = selectedHypo.viaPVA || '';
+                  hypoViaTTF1.textContent = selectedHypo.viaTTF1 || '';
+                  hypoViaTTF2.textContent = selectedHypo.viaTTF2 || '';
+                  hypoFirstScaleLocation.textContent = selectedHypo.firstScaleLocation || '';
+                  hypoFirstScalePrice.textContent = selectedHypo.firstScalePrice || '';
+  
+                  hypoDetails.style.display = 'block';
+              } catch (error) {
+                  console.error('Error parsing hypo data:', error);
+              }
+          } else {
+              hypoDetails.style.display = 'none';
+          }
+      });
+
+      
+        // Function to handle pill button selection within a specific group
+        function selectPillButton(element, group) {
+          const groupButtons = document.querySelectorAll(`#${group}-container .pill-button`);
+          groupButtons.forEach(button => button.classList.remove('selected'));
+      
+          element.classList.add('selected');
+          document.getElementById(`${group}-container`).classList.add('completed');
+      
+          validateSubmit();
+        }
+      
+        // Validation logic based on your specified requirements
+        function validateSubmit() {
+          const tradeDate = document.getElementById('tradeDate').value;
+          const hypoSelected = hypoSelect.value;
+          const isStep1Checked = document.getElementById('step1').checked;
+          const isStep2Checked = document.getElementById('step2').checked;
+          const isStep4Checked = document.getElementById('step4').checked;
+          const isStep5Checked = document.getElementById('step5').checked;
+          const isStep6Checked = document.getElementById('step6').checked;
+          const isStep7Checked = document.getElementById('step7').checked;
+          const isStep8Checked = document.getElementById('step8').checked;
+          const isStep12Checked = document.getElementById('step12').checked;
+          const isStep13Checked = document.getElementById('step13').checked;
+          const isStep14Checked = document.getElementById('step14').checked;
+          const isStep15Checked = document.getElementById('step15').checked;
+      
+          const vaTypeSelected = document.querySelector('#step9-container .pill-button.selected') !== null;
+          const vaPullbackSelected = document.querySelector('#step10-container .pill-button.selected') !== null;
+          const entriesSelected = document.querySelector('#step11-container .pill-button.selected') !== null;
+      
+          const dissonanceChecked = dissonanceYes.checked || dissonanceNo.checked;
+      
+          const basicChecks = tradeDate && hypoSelected && isStep1Checked && isStep2Checked && isStep4Checked &&
+                              isStep12Checked && isStep13Checked && isStep14Checked && isStep15Checked;
+      
+          const step5or6 = isStep5Checked || isStep6Checked;
+          const step7or8 = isStep7Checked || isStep8Checked;
+      
+          submitButton.disabled = !(basicChecks && dissonanceChecked && step5or6 && step7or8 && vaTypeSelected && vaPullbackSelected && entriesSelected);
+        }
+      
+        // Add 'completed' class when checklist item is checked, and validate submission
+        checkboxes.forEach((checkbox) => {
+          checkbox.addEventListener('change', () => {
+            const containerId = checkbox.id.replace('step', 'step') + '-container';
+            const container = document.getElementById(containerId);
+            if (checkbox.checked) {
+              container.classList.add('completed');
+            } else {
+              container.classList.remove('completed');
+            }
+            validateSubmit();
+          });
+        });
+      
+        // Submit button functionality
+submitButton.addEventListener('click', () => {
+  const tradeDate = document.getElementById('tradeDate').value;
+  const hypothesis = hypoSelect.value;
+  const selectedVAType = document.querySelector('#step9-container .pill-button.selected')?.textContent;
+  const selectedVAPullback = document.querySelector('#step10-container .pill-button.selected')?.textContent;
+  const selectedEntries = document.querySelector('#step11-container .pill-button.selected')?.textContent;
+
+  if (!tradeDate || !hypothesis) {
+    alert("Please fill out all fields.");
+    return;
+  }
+
+  const submitUrl = 'https://script.google.com/macros/s/AKfycbx5K1PyPRbVIBBZSXNNeiZM5QuVRAG2P2AcPngatxl9-8CR4IvHJCHhR8ZUP1GZQ4COEQ/exec';
+
+  // Send data to Google Sheet
+  fetch(submitUrl, { // Changed webAppUrl to submitUrl
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      tradeDate: tradeDate,
+      hypothesis: hypothesis,
+      selectedVAType: selectedVAType,
+      selectedVAPullback: selectedVAPullback,
+      selectedEntries: selectedEntries
+      // Add other fields as needed here
+    })
+  })
+  .then(response => response.text())
+  .then(result => {
+    if (result === 'Success') {
+      alert("Trade Submitted Successfully!");
+
+      // Reset all fields after submission
+      checkboxes.forEach(cb => cb.checked = false);
+      checkboxes.forEach((cb, index) => {
+        const containerId = `step${index + 1}-container`;
+        document.getElementById(containerId).classList.remove('completed');
+      });
+      document.querySelectorAll('.pill-button').forEach(button => button.classList.remove('selected'));
+      submitButton.disabled = true;
+      document.getElementById('tradeDate').value = '';
+      document.getElementById('hypoSelect').selectedIndex = 0;
+      hypoDetails.style.display = 'none';
+    } else {
+      alert("Error submitting data. Please try again.");
+    }
+  })
+  .catch(error => {
+    console.error("Error submitting form:", error);
+    alert("Failed to submit form.");
+  });
+});
+    </script>
+  
+  </body>
+  </html>
